@@ -30,6 +30,8 @@
 #' @param main.col Color for \code{main}. Will default to \code{text.col}
 #' @param NA.x Should \code{0}'s in \code{x} be set to \code{NA}?
 #' @param NA.y Should \code{0}'s in \code{y} be set to \code{NA}?
+#' @param pdim Pixel dimensions if passing in arrays.  Will be overridden if 
+#' \code{x} is a \code{nifti} object 
 #' @param ... Additional arguments to pass to \code{\link[graphics]{image}}
 #'
 #' @return NULL
@@ -96,10 +98,11 @@ multi_overlay = function(x,
                          main.cex = text.cex,
                          NA.x = TRUE,
                          NA.y = TRUE,
+                         pdim = NULL,
                          ...) {
   
   relist = function(r){
-    r = check_nifti(r)
+    r = check_nifti(r, allow.array = TRUE)
     if ( !"list" %in% typeof(r)){
       r = list(r)
     }
@@ -115,14 +118,21 @@ multi_overlay = function(x,
   }
   
   if (!is.null(mask)){
-    mask = check_nifti(mask)
-    o1 = dropEmptyImageDimensions(mask, other.imgs = all.x)
-    all.x = o1$other.imgs
+    mask = check_nifti(mask, allow.array = TRUE)
+    inds = getEmptyImageDimensions(mask)
+    all.x = lapply(all.x, 
+                   applyEmptyImageDimensions,
+                   inds = inds)
+    # o1 = dropEmptyImageDimensions(mask, other.imgs = all.x)
+    # all.x = o1$other.imgs
     if (y_not_null){
-      o.y = dropEmptyImageDimensions(mask, other.imgs = all.y)
-      all.y = o.y$other.imgs
+      # o.y = dropEmptyImageDimensions(mask, other.imgs = all.y)
+      all.y = lapply(all.y,
+                     applyEmptyImageDimensions,
+                     inds = inds)                     
+      # all.y = o.y$other.imgs
     }
-    mask = o1$outimg
+    # mask = mask[inds[[1]], inds[[2]], inds[[3]]]
   }
   
   direction = match.arg(direction, c("horizontal", "vertical"))
@@ -151,12 +161,24 @@ multi_overlay = function(x,
   main.col = make_length(main.col)
   main.cex = make_length(main.cex)
   
+  
+  
   do.call(par, par.opts)  
   for (i in seq_along(all.x)){
     x = all.x[[i]]
     
+    if (is.nifti(x)) {
+      pdim = pixdim(x)
+    } else {
+      if (is.null(pdim)) {
+        pdim = rep(1, 4)
+      } 
+    }
+    stopifnot(length(pdim) >= 4)
+    
+    
     switch(plane[1], axial = {
-      aspect <- x@pixdim[3]/x@pixdim[2]
+      aspect <- pdim[3]/pdim[2]
     }, coronal = {
       if (length(dim(x)) == 3) {
         x@.Data <- aperm(x, c(1, 3, 2))
@@ -164,7 +186,7 @@ multi_overlay = function(x,
         x@.Data <- aperm(x, c(1, 3, 2, 4))
       }
       y@.Data <- aperm(y, c(1, 3, 2))
-      aspect <- x@pixdim[4]/x@pixdim[2]
+      aspect <- pdim[4]/pdim[2]
     }, sagittal = {
       if (length(dim(x)) == 3) {
         x@.Data <- aperm(x, c(2, 3, 1))
@@ -172,7 +194,7 @@ multi_overlay = function(x,
         x@.Data <- aperm(x, c(2, 3, 1, 4))
       }
       y@.Data <- aperm(y, c(2, 3, 1))
-      aspect <- x@pixdim[4]/x@pixdim[3]
+      aspect <- pdim[4]/pdim[3]
     }, stop(paste("Orthogonal plane", plane[1], "is not valid.")))
     
     
@@ -183,13 +205,17 @@ multi_overlay = function(x,
       }
       if (NA.y){
         y[ y == 0 ] = NA
-        y = cal_img(y)
+        if (is.nifti(y)) {
+          y = cal_img(y)
+        }
       }      
     }
     
     if (NA.x){
       x[ x == 0 ] = NA
-      x = cal_img(x)
+      if (is.nifti(x)) {
+        x = cal_img(x)
+      }
     }
     
     X <- nrow(x)
@@ -200,12 +226,7 @@ multi_overlay = function(x,
       stop("size of NIfTI volume is zero, nothing to plot")
     }
     zlim.x = zlimmer(x, zlim.x)
-    breaks.x <- c(min(x, zlim.x, na.rm = TRUE), 
-                  seq(min(zlim.x, 
-                          na.rm = TRUE), 
-                      max(zlim.x, na.rm = TRUE),
-                      length = length(col.x) - 
-                        1), max(x, zlim.x, na.rm = TRUE))
+    breaks.x = breaker(x, zlim = zlim.x, col = col.x)
     if (y_not_null){
       zlim.y = zlimmer(y, zlim.y)  
     }  

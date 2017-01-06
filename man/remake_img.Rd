@@ -19,7 +19,7 @@ vector values are to be.}
 \item{...}{additional arguments passed to \code{\link{datatyper}}}
 }
 \value{
-object of class  \code{\link{nifti}}
+Object of class \code{\link{nifti}}
 }
 \description{
 Wrapper function to take a vector of values and result in a 
@@ -28,4 +28,3 @@ Wrapper function to take a vector of values and result in a
 \seealso{
 \code{\link{niftiarr}}
 }
-

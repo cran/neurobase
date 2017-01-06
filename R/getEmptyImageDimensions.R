@@ -1,6 +1,6 @@
 #' @title Get Empty Image Dimensions
 #' @name getEmptyImageDimensions
-#' @param img nifti object
+#' @param img nifti object or array
 #' @param value Value to check against.  If zero, then 
 #' \code{getEmptyImageDimensions} will include any dimension that has 
 #' fewer than \code{threshold} zeroes. May be a vector of values, matched with 
@@ -19,27 +19,30 @@ getEmptyImageDimensions <- function(img,
                                     threshold = 0,
                                     reorient = FALSE) {
   
-  img = check_nifti(img, reorient = reorient)
-  if (dim_(img)[1] > 3) {
+  img = check_nifti(img, reorient = reorient, allow.array = TRUE)
+  dimg = dim(img)
+  if (length(dimg) > 3) {
     stop(paste0("Only images with 3 dimensions supported, ", 
-                "as checked by dim_"))
+                "as checked by length(dim(img))"))
   }
   ############################
   # Set NAs to 0
   ############################
-  arr = as.array(img)
-  arr[is.na(arr)] = 0
-  img = niftiarr(img, arr)
+  img = as.array(img)
+  img[is.na(img)] = 0
+  # img = niftiarr(img, arr)
   
   
   ############################
   # Get indices for slices with all zeros (or of certain value)
   ############################
   inds = vector(mode = "list", length = 3)
+  bin_img = array(!(img %in% value), dim = dim(img))
   for (i in 1:3) {
-    zero_x = apply(img, i, function(x) {
-      sum(!(x %in% value))
-    })
+    zero_x = apply(bin_img, i, sum)
+    # zero_x = apply(img, i, function(x){
+      # sum(!(x %in% value))
+    # })
     # will only drop the ends of the slices
     dzero_x = !(
       cumsum(zero_x) <= threshold | 

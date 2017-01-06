@@ -53,6 +53,8 @@
 #' @param useRaster logical; if TRUE a bitmap raster is used to 
 #' plot the image instead of polygons.  Passed to 
 #' \code{\link[graphics]{image}}.
+#' @param mask If a mask is passed, \code{drop_empty_dim} is applied 
+#' to both \code{x} and \code{y}
 #' @param ... other arguments to the image function may be provided here.
 #' @export
 #' @import graphics
@@ -92,8 +94,15 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
                    add = TRUE,
                    pdim = NULL,
                   useRaster = TRUE,
+                  mask = NULL,
                    ...) 
 {
+  if (!is.null(mask)) {
+    mask = check_nifti(mask, allow.array = TRUE)
+    dd = dropEmptyImageDimensions(mask, keep_ind = TRUE)
+    keep_inds = dd$inds
+    rm(list = "dd");
+  }
   x = check_nifti(x, allow.array = TRUE)
   if (!is.null(y)) {
     if (!all(dim(x)[1:3] == dim(y)[1:3])) {
@@ -103,6 +112,9 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
   x_is_nifti = FALSE
   if (inherits(x, "nifti")) {
     x_is_nifti = TRUE
+    if (!is.null(mask)) {
+      x = apply_empty_dim(img = x, inds = keep_inds)
+    }
     if (!is.null(window)) {
       x = window_img(x, window = window, replace = "window")
 #       x@cal_min = window[1]
@@ -110,7 +122,12 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
 #       x[ x < window[1] ] = window[1]
 #       x[ x >= window[2] ] = window[2]
     }
+  } else {
+    if (!is.null(mask)) {
+      x = x[keep_inds[[1]], keep_inds[[2]], keep_inds[[3]]]    
+    }
   }
+  
   X <- nrow(x)
   Y <- ncol(x)
   Z <- nsli(x)
@@ -122,13 +139,22 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
     y = check_nifti(y, allow.array = TRUE)
     y_is_nifti = FALSE
     if (inherits(y, "nifti")) {
-      y_is_nifti = TRUE    
+      y_is_nifti = TRUE  
+      if (!is.null(mask)) {
+        y = apply_empty_dim(img = y, inds = keep_inds)
+      }
+    } else {
+      if (!is.null(mask)) {
+        y = y[keep_inds[[1]], keep_inds[[2]], keep_inds[[3]]]
+      }
     }
     if (NA.y) {
       y[ y == 0 ] = NA
     }
     if (y_is_nifti) {
       y = cal_img(y)
+      glmax(y) = cal.max(y)
+      glmin(y) = cal.min(y)       
     }
   }
   if (NA.x) {
@@ -237,6 +263,12 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
   if (!add & crosshairs) {
     abline(h = xyz[3], v = xyz[1], col = col.crosshairs)
   }
+  if (!add & add.orient) {
+    text("L", x = X + lr.shift, y = Z/2, las = 1, col = "white")
+    text("R", x = -lr.shift, y = Z/2, las = 1, col = "white")
+    text("S", x = X/2 - .5, y = Z - ud.shift, las = 1, col = "white")
+    text("I", x = X/2 - .5, y = ud.shift, las = 1, col = "white")
+  }  
   if (!is.null(y)) {
     if (inherits(y, "nifti") || inherits(y, "anlz")) {
       # class(y@.Data) == "numeric"
@@ -275,6 +307,12 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
   if (!add & crosshairs) {
     abline(h = xyz[3], v = xyz[2], col = col.crosshairs)
   }
+  if (!add & add.orient) {
+    text("A", x = Y - 1, y = Z/2, las = 1, col = "white")
+    text("P", x = 0 + 1, y = Z/2, las = 1, col = "white")
+    text("S", x = Y/2 - .5, y = Z - ud.shift, las = 1, col = "white")
+    text("I", x = Y/2 - .5, y = ud.shift, las = 1, col = "white")
+  }  
   if (!is.null(y)) {
     if (is.null(ybreaks)) {
       graphics::image(1:Y, 1:Z, y[xyz[1], , ], col = col.y, 
@@ -300,11 +338,6 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
     text("P", x = 0 + 1, y = Z/2, las = 1, col = "white")
     text("S", x = Y/2 - .5, y = Z - ud.shift, las = 1, col = "white")
     text("I", x = Y/2 - .5, y = ud.shift, las = 1, col = "white")
-    #     
-    #     mtext("A", side=4, las = 1, outer=FALSE, adj=0)
-    #     mtext("P", side=2, las = 1, outer=FALSE, adj= 0, padj=0)
-    #     mtext("S", side=3, las = 1, outer=FALSE)
-    #     mtext("I", side=1, las = 1, outer=FALSE)
   }    
   graphics::image(1:X, 1:Y, x[, , xyz[3]], col = col, breaks = breaks, 
                   asp = pdim[3]/pdim[2], xlab = xlab, ylab = ylab, 
@@ -314,6 +347,12 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
   if (!add & crosshairs) {
     abline(h = xyz[2], v = xyz[1], col = col.crosshairs)
   }
+  if (!add & add.orient) {
+    text("L", x = X + lr.shift, y = Y/2, las = 1, col = "white")
+    text("R", x = -lr.shift, y = Y/2, las = 1, col = "white")
+    text("A", x = X/2 - .5, y = Y - ud.shift, las = 1, col = "white")
+    text("P", x = X/2 - .5, y = ud.shift, las = 1, col = "white")
+  }    
   if (!is.null(y)) {
     if (is.null(ybreaks)) {
       graphics::image(1:X, 1:Y, y[, , xyz[3]], col = col.y, 
@@ -339,11 +378,6 @@ ortho2 = function(x, y = NULL, xyz = NULL, w = 1, col = gray(0:64/64),
     text("R", x = -lr.shift, y = Y/2, las = 1, col = "white")
     text("A", x = X/2 - .5, y = Y - ud.shift, las = 1, col = "white")
     text("P", x = X/2 - .5, y = ud.shift, las = 1, col = "white")
-    
-    #     mtext("L", side=4, las = 1, outer=FALSE, adj=0)
-    #     mtext("R", side=2, las = 1, outer=FALSE, adj= 0, padj=0)
-    #     mtext("A", side=3, las = 1, outer=FALSE)
-    #     mtext("P", side=1, las = 1, outer=FALSE)
   }    
   
   if (!is.null(text) | addlegend) {

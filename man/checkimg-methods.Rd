@@ -2,16 +2,19 @@
 % Please edit documentation in R/checkimg.R
 \docType{methods}
 \name{checkimg-methods}
+\alias{checkimg-methods}
 \alias{checkimg}
+\alias{checkimg,nifti-method}
+\alias{checkimg,ANY-method}
 \alias{checkimg,character-method}
 \alias{checkimg,list-method}
-\alias{checkimg,nifti-method}
-\alias{checkimg-methods}
 \title{Force object to filename}
 \usage{
 checkimg(file, ...)
 
 \S4method{checkimg}{nifti}(file, ...)
+
+\S4method{checkimg}{ANY}(file, ...)
 
 \S4method{checkimg}{character}(file, ...)
 
@@ -33,4 +36,3 @@ image or \code{nifti}.
 \author{
 John Muschelli \email{muschellij2@gmail.com}
 }
-

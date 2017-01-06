@@ -4,7 +4,7 @@
 \alias{robust_window}
 \title{Window image based on quantiles of Image}
 \usage{
-robust_window(img, probs = c(0, 0.999), ...)
+robust_window(img, probs = c(0, 0.999), ..., mask = NULL)
 }
 \arguments{
 \item{img}{object of class nifti}
@@ -12,6 +12,8 @@ robust_window(img, probs = c(0, 0.999), ...)
 \item{probs}{quantiles to constrain the image these define the window sent to \code{\link{window_img}}}
 
 \item{...}{additional arguments sent to \code{\link{window_img}}}
+
+\item{mask}{binary image to use to to calculate quantiles}
 }
 \value{
 Object of class nifti with values outside quantiles replaced
@@ -23,4 +25,3 @@ Takes an image, finds the quantiles given by
 values, as determined by \code{replace} argument passed to
 to \code{\link{window_img}}
 }
-

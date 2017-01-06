@@ -2,17 +2,20 @@
 % Please edit documentation in R/checkniigz.R
 \docType{methods}
 \name{checkniigz-methods}
+\alias{checkniigz-methods}
 \alias{checkniigz}
+\alias{checkniigz,nifti-method}
+\alias{checkniigz,ANY-method}
 \alias{checkniigz,character-method}
 \alias{checkniigz,list-method}
-\alias{checkniigz,nifti-method}
-\alias{checkniigz-methods}
 \alias{ensure_nii_gz}
 \title{Force object to filename with .nii.gz extension}
 \usage{
 checkniigz(file, ...)
 
 \S4method{checkniigz}{nifti}(file, ...)
+
+\S4method{checkniigz}{ANY}(file, ...)
 
 \S4method{checkniigz}{character}(file, ...)
 
@@ -37,4 +40,3 @@ image or \code{nifti}, to be gzipped and has \code{.nii.gz} extension
 \author{
 John Muschelli \email{muschellij2@gmail.com}
 }
-

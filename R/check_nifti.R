@@ -14,10 +14,13 @@
 #' @param allow.array (logical) Are array types allowed (TRUE) or
 #' should there be an error if the object is not character or class
 #' nifti.
+#' @param fast if \code{TRUE}, then \code{\link{fast_readnii}} will be used 
+#' versus \code{\link{readnii}} if the files need to be read in.
 #' @export 
 #' @author John Muschelli \email{muschellij2@@gmail.com} 
 setGeneric("check_nifti", function(x, reorient=FALSE, 
-                                   allow.array=FALSE) {
+                                   allow.array=FALSE,
+                                   fast = FALSE) {
   standardGeneric("check_nifti")
 })
 
@@ -26,9 +29,12 @@ setGeneric("check_nifti", function(x, reorient=FALSE,
 #' @export
 setMethod("check_nifti", "nifti", function(x, 
                                            reorient=FALSE, 
-                                           allow.array=FALSE) { 
+                                           allow.array=FALSE,
+                                           fast = FALSE) { 
   return(x)
 })
+
+
 
 #' @rdname check_nifti-methods
 #' @aliases check_nifti,character-method
@@ -36,15 +42,21 @@ setMethod("check_nifti", "nifti", function(x,
 #' @export
 setMethod("check_nifti", "character", function(x, 
                                                reorient=FALSE, 
-                                               allow.array=FALSE) { 
+                                               allow.array=FALSE,
+                                               fast = FALSE) { 
   ### add vector capability
-  if (length(x) > 1){
+  if (length(x) > 1) {
     file = lapply(x, check_nifti,  
                   reorient = reorient, 
-                  allow.array = allow.array)
+                  allow.array = allow.array,
+                  fast = fast)
     return(file)
   } else {
-    file = readnii(x, reorient = reorient)    
+    if (fast) {
+      file = fast_readnii(x)
+    } else {
+      file = readnii(x, reorient = reorient)
+    }
     return(file)
   }
 })
@@ -55,11 +67,13 @@ setMethod("check_nifti", "character", function(x,
 #' @export
 setMethod("check_nifti", "list", function(x,  
                                           reorient=FALSE, 
-                                          allow.array=FALSE) { 
+                                          allow.array=FALSE,
+                                          fast = FALSE) { 
   ### add vector capability
   file = lapply(x, check_nifti, 
                 reorient = reorient, 
-                allow.array = allow.array)
+                allow.array = allow.array,
+                fast = fast)
   return(file)
 })
 
@@ -69,12 +83,40 @@ setMethod("check_nifti", "list", function(x,
 #' @export
 setMethod("check_nifti", "array", function(x,  
                                            reorient=FALSE, 
-                                           allow.array=FALSE) { 
-  if (!allow.array){
+                                           allow.array=FALSE,
+                                           fast = FALSE) { 
+  if (!allow.array) {
     stop("x is array but allow.array = FALSE")
   }
   return(x)
 })
 
 
+#' @rdname check_nifti-methods
+#' @aliases check_nifti,anlz-method
+#' @export
+setMethod("check_nifti", "anlz", function(x,  
+                                          reorient=FALSE, 
+                                          allow.array=FALSE,
+                                          fast = FALSE) { 
+  
+  x = as.nifti(x)
+  return(x)
+})
 
+#' @rdname check_nifti-methods
+#' @aliases check_nifti,ANY-method
+#' @export
+setMethod("check_nifti", "ANY", 
+          function(x, 
+                   reorient=FALSE, 
+                   allow.array=FALSE,
+                   fast = FALSE) {
+            # workaround because can't get class
+            if (inherits(x, "niftiImage")) {
+              x = oro.nifti::nii2oro(x)
+            } else {
+              stop("Not implemented for this type!")
+            }
+            return(x)
+          })

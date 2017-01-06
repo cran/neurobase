@@ -4,12 +4,14 @@
 \alias{check_mask}
 \title{Check Mask is Binary}
 \usage{
-check_mask(mask, allow.NA = FALSE)
+check_mask(mask, allow.NA = FALSE, allow.array = TRUE)
 }
 \arguments{
 \item{mask}{Object of class \code{nifti}}
 
 \item{allow.NA}{allow NAs in the mask}
+
+\item{allow.array}{if \code{class(mask)} is \code{"array"}, is this OK?}
 }
 \value{
 Logical indicating if object is binary mask with only 0, 1, and \code{NA}
@@ -23,4 +25,3 @@ arr = array(rbinom(1000, size = 1, prob = 0.2), dim = c(10,10,10))
 nim = oro.nifti::nifti(arr)
 check_mask(nim)
 }
-
