@@ -8,7 +8,7 @@
 readNIfTI2(..., reorient = FALSE)
 
 readnii(..., reorient = FALSE, dtype = TRUE, drop_dim = TRUE,
-  warn = FALSE)
+  reset_slope = FALSE, warn = FALSE, rm_extensions = TRUE)
 }
 \arguments{
 \item{...}{Arguments to pass to \code{\link{readNIfTI}}}
@@ -19,9 +19,14 @@ readnii(..., reorient = FALSE, dtype = TRUE, drop_dim = TRUE,
 
 \item{drop_dim}{Should \code{\link{drop_img_dim}} be run after reading?}
 
+\item{reset_slope}{Reset slope/intercept of image}
+
 \item{warn}{Should warnings from \code{\link{readNIfTI}} be 
 printed?  If not, \code{\link{suppressWarnings}} is called.  Also passed to 
 \code{\link{datatyper}}}
+
+\item{rm_extensions}{should niftiExtensions be converted to simple
+nifti objects?}
 }
 \value{
 \code{nifti} object

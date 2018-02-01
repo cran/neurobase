@@ -254,3 +254,10 @@ long = reshape2::melt(as.matrix(df))
 colnames(long) = c("ind", "sequence", "value")
 long$ind = NULL
 
+## ----make_dists, cache = FALSE-------------------------------------------
+library(ggplot2)
+ggplot(long, aes(x = value)) + 
+  geom_line(stat = "density") +
+  facet_wrap(~ sequence, 
+             scales = "free_x")
+

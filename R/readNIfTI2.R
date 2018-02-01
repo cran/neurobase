@@ -17,10 +17,16 @@ readNIfTI2 <- function(..., reorient = FALSE){
 #' @param warn Should warnings from \code{\link{readNIfTI}} be 
 #' printed?  If not, \code{\link{suppressWarnings}} is called.  Also passed to 
 #' \code{\link{datatyper}}
+#' @param reset_slope Reset slope/intercept of image
+#' @param rm_extensions should niftiExtensions be converted to simple
+#' nifti objects?
 #' @export
+#' @importFrom oro.nifti is.niftiExtension
 readnii <- function(..., reorient = FALSE, dtype = TRUE, 
                     drop_dim = TRUE,
-                    warn = FALSE){
+                    reset_slope = FALSE,
+                    warn = FALSE,
+                    rm_extensions = TRUE){
   if (warn) {
     nim = oro.nifti::readNIfTI(..., reorient = reorient)
   } else {
@@ -34,5 +40,14 @@ readnii <- function(..., reorient = FALSE, dtype = TRUE,
   if (dtype) {
     nim = datatyper(nim, warn = warn)
   }
+  if (rm_extensions) {
+    if (is.niftiExtension(nim)) {
+      nim = as.nifti(nim)
+    } 
+  }
+  if (reset_slope) {
+    nim = oro.nifti::resetSlopeIntercept(nim)
+  }
+  
   return(nim)
 }
