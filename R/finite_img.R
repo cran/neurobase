@@ -9,9 +9,7 @@
 #' @param replace Value to replace non-finite values to
 #' @export 
 #' @author John Muschelli \email{muschellij2@@gmail.com} 
-setGeneric("finite_img", function(img, replace = 0) {
-  standardGeneric("finite_img")
-})
+setGeneric("finite_img", function(img, replace = 0) standardGeneric("finite_img"))
 
 #' @rdname finite_img-methods
 #' @aliases finite_img,nifti-method
@@ -19,6 +17,14 @@ setGeneric("finite_img", function(img, replace = 0) {
 setMethod("finite_img", "nifti", function(img, replace = 0) { 
   img[ !is.finite(img) ] = replace
   img = cal_img(img)
+  return(img)
+})
+
+#' @rdname finite_img-methods
+#' @aliases finite_img,array-method
+#' @export
+setMethod("finite_img", "array", function(img, replace = 0) { 
+  img[ !is.finite(img) ] = replace
   return(img)
 })
 
