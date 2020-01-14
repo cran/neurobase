@@ -4,9 +4,18 @@
 \alias{rescale_img}
 \title{Image Rescaler}
 \usage{
-rescale_img(filename, pngname = NULL, write.nii = FALSE,
-  outfile = NULL, min.val = -1024, max.val = 3071,
-  ROIformat = FALSE, writer = "dcm2nii", ...)
+rescale_img(
+  filename,
+  pngname = NULL,
+  write.nii = FALSE,
+  outfile = NULL,
+  min.val = -1024,
+  max.val = 3071,
+  ROIformat = FALSE,
+  drop_dim = TRUE,
+  writer = "dcm2nii",
+  ...
+)
 }
 \arguments{
 \item{filename}{filename of image to be read into R or nifti object}
@@ -25,6 +34,8 @@ set to -Inf}
 set to Inf}
 
 \item{ROIformat}{if TRUE, any values $< 0$ will be set to 0}
+
+\item{drop_dim}{Should \code{\link{drop_img_dim}} be applied?}
 
 \item{writer}{character value to add to description slot of NIfTI header}
 

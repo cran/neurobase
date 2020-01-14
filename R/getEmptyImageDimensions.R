@@ -8,6 +8,8 @@
 #' @param threshold Include dimension if fewer than \code{threshold} voxels
 #' are in the slice
 #' @param reorient Should image be reoriented if a filename?
+#' @param ... additional arguments to pass to 
+#' \code{\link{check_nifti}}
 #' @description Creates a list of indices of an image that has all irrelevant
 #' values
 #' @return List of length 3 of indices.
@@ -17,14 +19,17 @@
 getEmptyImageDimensions <- function(img, 
                                     value = 0, 
                                     threshold = 0,
-                                    reorient = FALSE) {
+                                    reorient = FALSE, 
+                                    ...) {
   
   img = check_nifti(img, 
                     reorient = reorient, 
                     allow.array = TRUE,
-                    need_header = FALSE)
+                    need_header = FALSE,
+                    ...)
   dimg = dim(img)
-  if (length(dimg) > 3) {
+  ndim = length(dimg)
+  if (ndim > 3) {
     stop(paste0("Only images with 3 dimensions supported, ", 
                 "as checked by length(dim(img))"))
   }
@@ -39,9 +44,9 @@ getEmptyImageDimensions <- function(img,
   ############################
   # Get indices for slices with all zeros (or of certain value)
   ############################
-  inds = vector(mode = "list", length = 3)
+  inds = vector(mode = "list", length = ndim)
   bin_img = array(!(img %in% value), dim = dim(img))
-  for (i in 1:3) {
+  for (i in 1:ndim) {
     zero_x = apply(bin_img, i, sum)
     # zero_x = apply(img, i, function(x){
     # sum(!(x %in% value))
@@ -60,12 +65,4 @@ getEmptyImageDimensions <- function(img,
 
 #' @rdname getEmptyImageDimensions
 #' @export
-get_empty_dim <- function(img, 
-                          value = 0, 
-                          threshold = 0,
-                          reorient = FALSE) {
-  getEmptyImageDimensions(img = img, 
-                          value = value, 
-                          threshold = threshold,
-                          reorient = reorient)
-}
+get_empty_dim <- getEmptyImageDimensions
