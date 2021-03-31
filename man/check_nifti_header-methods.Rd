@@ -40,6 +40,21 @@ nifti object or character
 Simple check to see if input is character or of 
 class nifti and read in the header
 }
+\examples{
+set.seed(5)
+dims = rep(10, 4)
+arr = array(rpois(prod(dims), lambda = 2), dim = dims)
+nim = oro.nifti::nifti(arr)
+check_nifti_header(nim)
+check_nifti_header(as.anlz(nim))
+testthat::expect_error(check_nifti_header(arr))
+tfile = tempimg(nim)
+check_nifti_header(tfile)
+check_nifti_header(RNifti::readNifti(tfile))
+check_nifti_header(c(tfile, tfile))
+check_nifti_header(list(tfile, tfile))
+check_nifti_header(factor(tfile))
+}
 \author{
 John Muschelli \email{muschellij2@gmail.com}
 }

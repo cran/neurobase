@@ -8,6 +8,22 @@
 #' @return Matrix of V by p, where V is the product of the dimensions of one 
 #' image or the number of voxels in the mask, and p is the number of images
 #' @export
+#' @examples 
+#' set.seed(5)
+#' dims = rep(10, 3)
+#' arr = array(rpois(prod(dims), lambda = 2), dim = dims)
+#' nim = oro.nifti::nifti(arr)
+#' imgs = list(nim, arr)
+#' mask = nim > 2
+#' mat1 = images2matrix(imgs)
+#' mat2 = images2matrix(list(nim, nim))
+#' if (packageVersion("oro.nifti") >= package_version("0.10.2")) {
+#' testthat::expect_equal(mat1, mat2)
+#' } else {
+#' testthat::expect_error(testthat::expect_equal(mat1, mat2))
+#' }
+#' mat1 = images2matrix(imgs, mask = mask)
+#' mat2 = images2matrix(list(nim, nim), mask)
 images2matrix <- function(
   imgs, 
   mask = NULL){

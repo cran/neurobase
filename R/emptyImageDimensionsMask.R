@@ -10,6 +10,17 @@
 #' with all the same arguments.
 #' @seealso \code{\link{getEmptyImageDimensions}}  
 #' @export
+#' @examples 
+#' set.seed(5)
+#' dims = rep(10, 3)
+#' arr = array(rnorm(prod(dims)), dim = dims)
+#' arr[,,10] = 0
+#' nim = oro.nifti::nifti(arr)
+
+#' out = emptyImageDimensionsMask(nim)
+#' out_arr = emptyImageDimensionsMask(arr)
+#' testthat::expect_equal(out_arr, array(out, dim = dim(out)))
+#' out_arr = empty_dim_mask(arr)
 emptyImageDimensionsMask <- function(img, 
                                      ...,
                                      reorient = FALSE) {
@@ -38,7 +49,7 @@ emptyImageDimensionsMask <- function(img,
 empty_dim_mask <- function(img, 
                            ...,
                            reorient = FALSE) {
-  maskEmptyImageDimensions(img = img, 
+  emptyImageDimensionsMask(img = img, 
                            ... = ...,
                            reorient = reorient
                            )

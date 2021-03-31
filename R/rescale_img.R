@@ -19,6 +19,12 @@
 #' @return Object of class nifti
 #' @importFrom grDevices png dev.off
 #' @export
+#' @examples 
+#' img = nifti(array(rnorm(10^3, sd = 1000), dim = rep(10, 3)))
+#' outfile = tempfile(fileext = ".nii.gz")
+#' pngname = tempfile(fileext = ".png")
+#' rescale_img(img, write.nii = TRUE, outfile = outfile,
+#' pngname = pngname)
 rescale_img = function(filename, 
                        pngname = NULL, 
                        write.nii = FALSE,
@@ -42,7 +48,7 @@ rescale_img = function(filename,
     img[img < min.val] = min.val
     img[img > max.val] = max.val
   }
-
+  
   img = zero_trans(img)
   if (ROIformat) {
     img[img < 0] = 0
@@ -59,7 +65,7 @@ rescale_img = function(filename,
     ### remove random percents
     pngname = gsub("%", "", pngname)
     grDevices::png(pngname)
-      graphics::hist(img)
+    graphics::hist(img)
     grDevices::dev.off()
   }
   
@@ -90,6 +96,11 @@ rescale_img = function(filename,
 #' for image masks - makes them binary if
 #' @name datatype
 #' @export
+#' @examples 
+#' img = nifti(array(rnorm(10^3, sd = 1000), dim = rep(10, 3)))
+#' rimg = round(img)
+#' newnii(datatyper(rimg))
+#' rimg = datatyper(rimg, type_string= "FLOAT32")
 datatyper = function(img, type_string = NULL,
                      datatype = NULL, bitpix=NULL, trybyte=TRUE,
                      warn = TRUE){
@@ -107,14 +118,26 @@ datatyper = function(img, type_string = NULL,
     return(img)
   }
   if (!is.null(datatype) & is.null(bitpix)) {
-    stop("Both bitipx and datatype need to be specified if oneis")
+    stop("Both bitpix and datatype need to be specified if one is")
   }
   if (is.null(datatype) & !is.null(bitpix)) {
-    stop("Both bitipx and datatype need to be specified if oneis")
+    stop("Both bitpix and datatype need to be specified if one is")
   }
   #### logical - sign to unsigned int 8
   arr = as(img, "array")
   is.log = inherits(arr[1], "logical")
+  
+  any_na = anyNA(arr)
+  if (any_na) {
+    warn_them = img@datatype < 64L
+    img@"datatype" = max(64L, img@datatype)
+    warn_them = warn_them | img@bitpix < 64L
+    img@bitpix = max(64L, img@bitpix)
+    if (warn_them) {
+      warning("Need to change bitpix and datatype to FLOAT64 due to NAs")
+    }
+    return(img)
+  }  
   if (is.log) {
     datatype(img) <- convert.datatype()$UINT8
     bitpix(img) <- convert.bitpix()$UINT8
@@ -146,10 +169,10 @@ datatyper = function(img, type_string = NULL,
     mystr = NULL
     num = 16 # default is signed short
     if (is.null(mystr) & trange <= (2 ^ num) - 1 ) {
-        # mystr = ifelse(signed, "INT16", "FLOAT32")
+      # mystr = ifelse(signed, "INT16", "FLOAT32")
       mystr = "INT16"
     }
-
+    
     num = 32 
     if (is.null(mystr) & trange <= (2 ^ num) - 1 ) {
       mystr = "INT32" # no UINT32 allowed
@@ -157,18 +180,18 @@ datatyper = function(img, type_string = NULL,
     
     num = 64
     if (is.null(mystr) & trange <= (2 ^ num) - 1 ) {
-      mystr = "DOUBLE64" # Only way to 64 bits is through double
+      mystr = "FLOAT64" # Only way to 64 bits is through double
     }
     if (is.null(mystr)) {
       stop(paste0("Cannot determine integer datatype, ", 
                   "may want to recheck data or not use datatyper!"))
     }
-    datatype(img) <- convert.datatype()[[mystr]]
-    bitpix(img) <- convert.bitpix()[[mystr]]
+    datatype(img) <- oro.nifti::convert.datatype()[[mystr]]
+    bitpix(img) <-  oro.nifti::convert.bitpix()[[mystr]]
     return(img)
   } else {
     if (warn) {
-      warning("Assuming FLOAT32")
+      warning("Assuming FLOAT32 - changing @bitpix and @datatype in header")
     }
     mystr = "FLOAT32"
     datatype(img) <- convert.datatype()[[mystr]]

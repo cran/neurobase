@@ -17,6 +17,15 @@
 #' @export
 #' @seealso \code{\link{ortho2}}
 #' @return NULL
+#' @examples 
+#' 
+#' set.seed(5)
+#' dims = rep(10, 3)
+#' arr = array(rpois(prod(dims), lambda = 2), dim = dims)
+#' nim = oro.nifti::nifti(arr)
+#' roi = nim > 2
+#' pred = nim > 1.5
+#' ortho_diff(nim, pred, roi)
 ortho_diff <- function(img, 
                        pred, # binary segmentation (prediction)
                        roi, # binary manual segmentation (ground truth)
@@ -81,9 +90,18 @@ ortho_diff <- function(img,
 #' @rdname ortho_diff
 #' @param z slice to display
 #' @export
-#' @examples \dontrun{
+#' @examples 
+#' set.seed(5)
+#' dims = rep(10, 3)
+#' arr = array(rnorm(prod(dims)), dim = dims)
+#' nim = oro.nifti::nifti(arr)
+#' mask = nim > 2
+#' pred = nim > 1.5
+#' multi_overlay_diff(nim, roi = mask, pred = pred)
 #' 
-#'  if (require(brainR)) {
+#' \donttest{
+#' 
+#'  if (requireNamespace("brainR", quietly = TRUE)) {
 #'    visits = 1:3
 #'    y = paste0("Visit_", visits, ".nii.gz")
 #'    y = system.file(y, package = "brainR")

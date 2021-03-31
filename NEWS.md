@@ -1,6 +1,15 @@
+# neurobase 1.32.0
+
+* Moved `orient_rpi` from `fslr`.
+* Moved `read_rpi` from `fslr`.
+
+# neurobase 1.30.0
+
+* Added `replaceEmptyImageDimensions`, which should likely deprecate `replace_dropped_dimensions`.
+
 # neurobase 1.29.0
 
-* Fixed `robust_window` bug for non-`nifti` objecs.
+* Fixed `robust_window` bug for non-`nifti` objects.
 
 # neurobase 1.28.0
 

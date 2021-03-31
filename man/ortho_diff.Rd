@@ -59,9 +59,25 @@ Uses \code{\link{ortho2}} to plot differences between a predicted binary
 image and the assumed ground truth (\code{roi}).
 }
 \examples{
-\dontrun{
 
- if (require(brainR)) {
+set.seed(5)
+dims = rep(10, 3)
+arr = array(rpois(prod(dims), lambda = 2), dim = dims)
+nim = oro.nifti::nifti(arr)
+roi = nim > 2
+pred = nim > 1.5
+ortho_diff(nim, pred, roi)
+set.seed(5)
+dims = rep(10, 3)
+arr = array(rnorm(prod(dims)), dim = dims)
+nim = oro.nifti::nifti(arr)
+mask = nim > 2
+pred = nim > 1.5
+multi_overlay_diff(nim, roi = mask, pred = pred)
+
+\donttest{
+
+ if (requireNamespace("brainR", quietly = TRUE)) {
    visits = 1:3
    y = paste0("Visit_", visits, ".nii.gz")
    y = system.file(y, package = "brainR")

@@ -15,6 +15,15 @@
 #' @rdname writeNIfTI2
 #' @export
 #' @importFrom RNifti writeNifti
+#' @examples 
+#' set.seed(5)
+#' dims = rep(10, 3)
+#' arr = array(rnorm(prod(dims)), dim = dims)
+#' nim = oro.nifti::nifti(arr)
+#' rnifti = RNifti::asNifti(nim)
+#' tfile = tempfile(fileext = ".nii.gz")
+#' timg = writenii(nim, tfile, rm_extensions = TRUE, warn = TRUE)
+#' timg = writeNIfTI2(nim, tfile, dtype = TRUE)
 writeNIfTI2 <- function(nim, filename, dtype = FALSE, 
                         compression = 9,
                         ...){
@@ -41,7 +50,7 @@ writenii <- function(nim, filename,
                      rm_extensions = TRUE,
                      ...){
   if (drop_dim) {
-    nim = drop_img_dim(nim)
+    nim = oro.nifti::drop_img_dim(nim)
   }
   if (dtype) {
     nim = datatyper(nim, warn = warn)
