@@ -2,7 +2,7 @@ Package: neurobase
 Type: Package
 Title: 'Neuroconductor' Base Package with Helper Functions for 'nifti'
         Objects
-Version: 1.32.0
+Version: 1.32.1
 Authors@R: person(given = "John",
            family = "Muschelli",
            role = c("aut", "cre"),
@@ -23,7 +23,7 @@ BugReports: https://github.com/muschellij2/neurobase/issues
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-03-31 03:01:56 UTC; johnmuschelli
+Packaged: 2021-04-07 19:46:50 UTC; johnmuschelli
 Author: John Muschelli [aut, cre]
 Repository: CRAN
-Date/Publication: 2021-03-31 06:10:03 UTC
+Date/Publication: 2021-04-07 20:50:02 UTC

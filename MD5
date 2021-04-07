@@ -1,6 +1,6 @@
-85a7b2db042685e795df92dbef982bef *DESCRIPTION
-7b4e01545d3d29d4cc83ab52d76b740a *NAMESPACE
-2ece47a7e5f51ea9761ae51dbf99ff13 *NEWS.md
+c29dca6d50b915408bc7ab22cd3dfa48 *DESCRIPTION
+1caf4f5b358807b9bd597af712c5ef08 *NAMESPACE
+aa927bcd211535ed8f64842394930775 *NEWS.md
 a772f80a103466159dad531483d2e4c7 *R/applyEmptyImageDimensions.R
 5139677fc878d5528eb37b3106aea38c *R/boxplot.nifti.R
 78ffb7f504318a6a0319792b0acb6914 *R/breaker.R
@@ -40,7 +40,7 @@ fd24cbec68fdf3917c69fb2bbbc397d2 *R/mean.nifti.R
 24eac1bf47d07d00af275608b1683577 *R/niftiarr.R
 a29c8c2d11d7091cf37dacea0e345ad1 *R/nii.stub.R
 d51890693fa60c0a59ea8641f768dae1 *R/orient_rpi.R
-3e3af46c4e1272690ae1ce4268ce735b *R/ortho2.R
+1dd64710f2f696d442a8446b12f0711f *R/ortho2.R
 6b8f3179b391feb5f66d33f5ad84378f *R/ortho_diff.R
 f2aa437530487a60dc7255430acb70ca *R/overlay2.R
 5f65ebc178bd412f6593a0e1cc1059ce *R/parse_img_ext.R
@@ -49,7 +49,7 @@ deec2e84efc5a17d122b3f258f3e2698 *R/quantile_img.R
 3ceb6697455d5ac43da7b2c8e086c027 *R/random_nifti.R
 1adb12bb2b6b57a556a088ad8ff69813 *R/randomize_mask.R
 6b73947303843c860ebe33c78316150c *R/readNIfTI2.R
-7cfa72b252efafd4f0eb1509330cc3e7 *R/read_rpi.R
+ab01782d75850e46e50423342afd51a9 *R/read_rpi.R
 7aca10e0813179cbf0750298048398bc *R/remake_img.R
 e31f15a35d41c13964edcada0f4f594c *R/remap_filename.R
 e9fca49c7acd035dacffc35f2b99d571 *R/replaceEmptyImageDimensions.R
@@ -72,13 +72,13 @@ bfe55cd106024d62eebfc389cf6ed14a *README.md
 0bd668d444dab7b048f6829c7b8fbe60 *build/vignette.rds
 85bdc5b13196852aa33955853dd118ed *inst/doc/neurobase.R
 9f71fc4e1520c311e4977c692e296614 *inst/doc/neurobase.Rmd
-38e39a19ef0c7074d3c3810650a010e9 *inst/doc/neurobase.html
+bd804abea14cf0445bbf46443d56dc1c *inst/doc/neurobase.html
 3673af782da5f3be2c220d3600af3d1e *inst/doc/nifti_basics.R
 d42df5696e3b7753deeac93c2485b0e1 *inst/doc/nifti_basics.Rmd
-1b8ed1345ebc2ca418953de647ded775 *inst/doc/nifti_basics.html
+1bbeba84a4399f428f7c2f60a289555a *inst/doc/nifti_basics.html
 0d67acb6fe5f12404855fd5e2110cf8d *inst/doc/simple_io.R
 dbe9a6119d2516a66f13b988b15da58d *inst/doc/simple_io.Rmd
-e80a69ebfc15e8ad16e38c15ccbf7052 *inst/doc/simple_io.html
+de510054f06f739a1898d3da2b24558d *inst/doc/simple_io.html
 21c5b6b40e1be897373f55b9eba661e5 *man/applyEmptyImageDimensions-methods.Rd
 e603129286fc71c5f7decae265d2c02f *man/boxplot.nifti.Rd
 eb7743f7072031ca9ea4300dd4625778 *man/breaker.Rd
@@ -125,7 +125,7 @@ a4ca70a9d0a6fa0f21dc0c835025b808 *man/newnii.Rd
 f1d75069307869e9da7dd5d9eebc97f1 *man/niftiarr.Rd
 de8ab0e0c3d63521ab6fa408386c0852 *man/nii.stub.Rd
 8cb8dfd1a016195b541f0c0e32498748 *man/orient_rpi.Rd
-c98bc279d257780dd9fe42ea8e4dc5b8 *man/ortho2.Rd
+4d2ef78502605e3394a39d13d887e152 *man/ortho2.Rd
 bc15d268aaa3306b3e7776e66d2b6dbc *man/ortho_diff.Rd
 f7bcc443369a53270e483b5fdbfc8cd0 *man/parse_img_ext.Rd
 1125c31468b5f3be026b9041d020c359 *man/quantile.nifti.Rd
