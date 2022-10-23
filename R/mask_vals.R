@@ -11,9 +11,11 @@
 #'
 #' @export
 #' @examples 
+#' set.seed(2022)
 #' img = nifti(array(rnorm(10^3), dim = rep(10, 3)))
 #' mask = img > 1.5
 #' mask_vals(img, mask)
+#'testthat::expect_equal(sum(mask_vals(img, mask)), 117.628200302518)
 #' mask_vals(img, mask) = rep(4, sum(mask))
 #' mask_vals(img, as(mask, "array")) = rep(4, sum(mask))
 #' mask_vals(as(img, "array"), 
@@ -28,7 +30,7 @@ mask_vals =  function(object, mask) {
   if (!same_dim) {
     stop("Dimensions of Mask and Image are not the same")
   }
-  vals = object[mask %in% 1]     
+  vals = object[as.integer(mask) %in% 1]
   return(vals)  
 }
 
@@ -42,7 +44,7 @@ setGeneric("mask_vals<-", function(object, mask, value) standardGeneric("mask_va
 
 .quick_check = function(mask, value) {
   check_mask_fail(mask, allow.NA = TRUE, allow.array = TRUE)
-  ind = mask %in% 1
+  ind = as.integer(mask) %in% 1
   n_ones = sum(ind)
   value = c(value)
   n_value = length(value)
@@ -68,7 +70,7 @@ setGeneric("mask_vals<-", function(object, mask, value) standardGeneric("mask_va
 
 .cal_mask_vals = function(object, mask, value) {
   object = .mask_vals(object, mask, value)
-  object = cal_img(object)
+  object = oro.nifti::calibrateImage(object)
   return(object)
 }
 
