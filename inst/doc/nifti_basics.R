@@ -8,7 +8,7 @@ library(reshape2)
 knitr::opts_chunk$set(
   echo = TRUE,  comment = "")
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  packages = installed.packages()
 #  packages = packages[, "Package"]
 #  if (!"oro.nifti" %in% packages) {
