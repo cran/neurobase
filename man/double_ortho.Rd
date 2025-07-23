@@ -7,6 +7,7 @@
 double_ortho(
   x,
   y = NULL,
+  col = gray(0:64/64),
   col.y = gray(0:64/64),
   NA.x = TRUE,
   mfrow = c(2, 4),
@@ -18,6 +19,8 @@ double_ortho(
 \item{x}{is an object of class nifti or similar.}
 
 \item{y}{is an object of class nifti or similar to be set aside x.}
+
+\item{col}{is grayscale (by default).}
 
 \item{col.y}{is grayscale (by default).}
 
@@ -31,9 +34,16 @@ in \code{double_ortho}}
 \item{...}{other arguments to \code{\link{ortho2}}}
 }
 \description{
-Copy of \code{oro.nifti}'s \code{\link{orthographic}} function 
-with some tweaks such as adding L/R designations for left and right
+Orthographic function, but side-by-side
+}
+\examples{
+set.seed(10)
+x = oro.nifti::nifti(array(rnorm(10000), dim = rep(10, 4)))
+y = x > 2
+mask = x > 2.5
+double_ortho(x, y)
+
 }
 \seealso{
-\link{orthographic}
+\link[oro.nifti]{orthographic}
 }
